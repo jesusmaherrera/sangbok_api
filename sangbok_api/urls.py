@@ -20,7 +20,7 @@ from django.http import JsonResponse
 
 def health_check(request):
     """Health check endpoint for Dokploy"""
-    return JsonResponse({'status': 'ok', 'message': 'Django API is running'})
+    return JsonResponse({'status': 'ok', 'message': 'Django API is running 2'})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
