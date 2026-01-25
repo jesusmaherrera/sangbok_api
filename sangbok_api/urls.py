@@ -1,8 +1,8 @@
 """
-URL configuration for djangoexample project.
+URL configuration for sangbok_api project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -16,7 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.http import JsonResponse
+
+def health_check(request):
+    """Health check endpoint for Dokploy"""
+    return JsonResponse({'status': 'ok', 'message': 'Django API is running'})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('health/', health_check, name='health'),
+    path('', health_check, name='home'),
 ]
