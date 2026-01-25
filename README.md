@@ -45,6 +45,22 @@ python manage.py runserver
 
 El proyecto estará disponible en `http://127.0.0.1:8000/`
 
+## Producción / Deploy
+
+Para producción, usa Gunicorn con la configuración que escucha en `0.0.0.0`:
+
+### Opción 1: Usando el archivo de configuración
+```bash
+gunicorn -c gunicorn_config.py
+```
+
+### Opción 2: Comando directo
+```bash
+gunicorn --bind 0.0.0.0:8000 sangbok_api.wsgi:application
+```
+
+**Importante para Dokploy**: Asegúrate de que el comando de inicio en Dokploy use `0.0.0.0` en lugar de `127.0.0.1`. El archivo `gunicorn_config.py` ya está configurado correctamente.
+
 ## Estructura del Proyecto
 
 ```
