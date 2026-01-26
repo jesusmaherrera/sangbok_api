@@ -1,13 +1,10 @@
 providers = ["python"]
 
-[phases.setup]
-nixPkgs = ["python3", "pip"]
-
 [phases.install]
-cmds = ["python3 -m pip install -r requirements.txt"]
+cmds = ["pip install -r requirements.txt"]
 
 [phases.build]
-cmds = ["python3 manage.py collectstatic --noinput || true"]
+cmds = ["python manage.py collectstatic --noinput || true"]
 
 [start]
-cmd = "python3 manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 sangbok_api.wsgi:application"
+cmd = "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 sangbok_api.wsgi:application"
