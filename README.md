@@ -22,22 +22,30 @@ En la configuración de tu aplicación en Dokploy, agrega las siguientes variabl
 1. **Conecta tu repositorio Git** a Dokploy (GitHub, GitLab, Bitbucket, etc.)
 
 2. **Crea una nueva aplicación** en Dokploy y selecciona:
-   - **Build Method**: Dockerfile
-   - **Dockerfile Path**: `Dockerfile` (o deja el default)
+   
+   - **Build Method**: `Nixpacks`
+   - Nixpacks detecta automáticamente Django y construye la imagen
+   - **Archivos de configuración**:
+     - `runtime.txt`: Especifica Python 3.12 (requerido para Django 6)
+     - `nixpacks.toml`: Configura migraciones, collectstatic y comando de inicio
+   - **Proceso automático**:
+     1. Detecta Python 3.12 desde `runtime.txt`
+     2. Instala dependencias desde `requirements.txt`
+     3. Ejecuta `collectstatic` durante el build
+     4. Ejecuta migraciones y inicia Gunicorn al iniciar
 
 3. **Configura las variables de entorno** mencionadas arriba
 
 4. **Configura el puerto**: Asegúrate de que el puerto esté configurado como `8000` en Dokploy
+   - El puerto está configurado como `8000` en `nixpacks.toml`
+   - Dokploy puede mapear automáticamente el puerto interno al externo
 
 5. **Base de datos (opcional)**:
    - Si usas PostgreSQL, crea una base de datos en Dokploy
    - Descomenta la configuración de PostgreSQL en `sangbok_api/settings.py`
    - Agrega las variables de entorno de la base de datos
 
-6. **Migraciones**: Dokploy puede ejecutar comandos antes del deploy. Agrega:
-   ```
-   python manage.py migrate --noinput
-   ```
+6. **Migraciones**: Las migraciones se ejecutan automáticamente antes de iniciar (configurado en `nixpacks.toml`)
 
 7. **Habilita Auto Deploy** (opcional) para que se despliegue automáticamente cuando hagas push a tu repositorio
 
