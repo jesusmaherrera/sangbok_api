@@ -24,28 +24,21 @@ En la configuración de tu aplicación en Dokploy, agrega las siguientes variabl
 2. **Crea una nueva aplicación** en Dokploy y selecciona:
    
    - **Build Method**: `Nixpacks`
-   - Nixpacks detecta automáticamente Django y construye la imagen
-   - **Archivos de configuración**:
-     - `runtime.txt`: Especifica Python 3.12 (requerido para Django 6)
-     - `nixpacks.toml`: Configura migraciones, collectstatic y comando de inicio
-   - **Proceso automático**:
-     1. Detecta Python 3.12 desde `runtime.txt`
-     2. Instala dependencias desde `requirements.txt`
-     3. Ejecuta `collectstatic` durante el build
-     4. Ejecuta migraciones y inicia Gunicorn al iniciar
+   - **Puerto de la aplicación**: `8000` (obligatorio)
+   - Archivos: `runtime.txt` (Python 3.12), `Procfile` (comando de inicio con Gunicorn en `0.0.0.0:8000`)
 
 3. **Configura las variables de entorno** mencionadas arriba
 
-4. **Configura el puerto**: Asegúrate de que el puerto esté configurado como `8000` en Dokploy
-   - El puerto está configurado como `8000` en `nixpacks.toml`
-   - Dokploy puede mapear automáticamente el puerto interno al externo
+4. **Configura el puerto en Dokploy**: En la app → configuración, define el puerto **8000**
+   - La app debe escuchar en `0.0.0.0:8000` (el `Procfile` ya lo hace)
+   - Si usas otro puerto, Traefik no podrá conectarse y verás **Bad Gateway**
 
 5. **Base de datos (opcional)**:
    - Si usas PostgreSQL, crea una base de datos en Dokploy
    - Descomenta la configuración de PostgreSQL en `sangbok_api/settings.py`
    - Agrega las variables de entorno de la base de datos
 
-6. **Migraciones**: Las migraciones se ejecutan automáticamente antes de iniciar (configurado en `nixpacks.toml`)
+6. **Migraciones**: Se ejecutan al iniciar (definido en el `Procfile`)
 
 7. **Habilita Auto Deploy** (opcional) para que se despliegue automáticamente cuando hagas push a tu repositorio
 
@@ -86,3 +79,9 @@ python manage.py runserver
 - `/` - Health check
 - `/health/` - Health check endpoint
 - `/admin/` - Panel de administración de Django
+
+### Bad Gateway al entrar a la URL
+
+- **Puerto**: En Dokploy, la app debe tener el puerto **8000** configurado (mismo que usa Gunicorn en el `Procfile`).
+- **ALLOWED_HOSTS**: Si usas dominio, añade en env `ALLOWED_HOSTS=tu-dominio.com,www.tu-dominio.com` (o `*` para aceptar cualquiera).
+- **Logs**: Revisa los logs del contenedor en Dokploy para ver si la app arranca o hay errores (DB, env, etc.).
