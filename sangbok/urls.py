@@ -1,10 +1,11 @@
 from django.urls import path, include
 from django.contrib.auth import get_user_model
+from rest_framework import permissions
 from .apps.songs.models import Song
 from rest_framework import routers, serializers, viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -32,6 +33,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
